@@ -81,9 +81,9 @@ $users = $pdo->query(
                     </p>
                 </div>
 
-                <button class="btn btn-primary" type="button" disabled>
-                    + Add User
-                </button>
+               <a href="create.php" class="btn btn-primary">
+    + Add User
+</a>
             </div>
 
             <div class="table-responsive">
