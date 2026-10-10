@@ -1,14 +1,39 @@
-
+```php
 <?php
 
-$host = getenv('DB_HOST') ?: '127.0.0.1';
-$dbname = getenv('DB_NAME') ?: 'simple_crud';
-$username = getenv('DB_USER') ?: 'appuser';
-$password = getenv('DB_PASSWORD') ?: '';
+$databaseUrl = getenv('DATABASE_URL');
+
+if ($databaseUrl) {
+    $db = parse_url($databaseUrl);
+
+    if (
+        $db === false ||
+        empty($db['host']) ||
+        empty($db['user']) ||
+        !isset($db['path']) ||
+        $db['path'] === '/'
+    ) {
+        error_log('Invalid DATABASE_URL configuration.');
+        http_response_code(503);
+        exit('Database configuration is invalid.');
+    }
+
+    $host = $db['host'];
+    $port = $db['port'] ?? 3306;
+    $dbname = ltrim($db['path'], '/');
+    $username = $db['user'];
+    $password = $db['pass'] ?? '';
+} else {
+    $host = getenv('DB_HOST') ?: '127.0.0.1';
+    $port = getenv('DB_PORT') ?: '3306';
+    $dbname = getenv('DB_NAME') ?: 'simple_crud';
+    $username = getenv('DB_USER') ?: 'appuser';
+    $password = getenv('DB_PASSWORD') ?: '';
+}
 
 try {
     $pdo = new PDO(
-        "mysql:host={$host};dbname={$dbname};charset=utf8mb4",
+        "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4",
         $username,
         $password,
         [
@@ -23,3 +48,4 @@ try {
     http_response_code(503);
     exit('Database is temporarily unavailable. Please try again later.');
 }
+```
