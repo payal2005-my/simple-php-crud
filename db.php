@@ -1,7 +1,7 @@
 
 <?php
 
-
+$databaseUrl = getenv('DATABASE_URL');
 if ($databaseUrl) {
     $db = parse_url($databaseUrl);
 
