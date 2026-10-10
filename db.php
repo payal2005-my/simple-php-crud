@@ -1,4 +1,4 @@
-```php
+
 <?php
 
 $databaseUrl = getenv('DATABASE_URL');
@@ -48,4 +48,4 @@ try {
     http_response_code(503);
     exit('Database is temporarily unavailable. Please try again later.');
 }
-```
+
