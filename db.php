@@ -1,4 +1,4 @@
-
+```php
 <?php
 
 $databaseUrl = getenv('DATABASE_URL');
@@ -32,6 +32,12 @@ if ($databaseUrl) {
 }
 
 try {
+    $caFile = __DIR__ . '/certs/coolify-ca.crt';
+
+    if (!is_readable($caFile)) {
+        throw new RuntimeException('MySQL CA certificate is missing.');
+    }
+
     $pdo = new PDO(
         "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4",
         $username,
@@ -40,12 +46,14 @@ try {
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::MYSQL_ATTR_SSL_CA => $caFile,
+            PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
         ]
     );
-} catch (PDOException $e) {
+} catch (Throwable $e) {
     error_log('Database connection failed: ' . $e->getMessage());
 
     http_response_code(503);
     exit('Database is temporarily unavailable. Please try again later.');
 }
-
+```
