@@ -1,4 +1,3 @@
-```php
 <?php
 session_start();
 
@@ -213,4 +212,4 @@ $users = $pdo->query(
 
 </body>
 </html>
-```
+
