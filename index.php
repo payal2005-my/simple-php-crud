@@ -1,9 +1,13 @@
+```php
 <?php
 require_once __DIR__ . '/db.php';
 
 $pageTitle = 'Simple PHP CRUD';
+
 $users = $pdo->query(
-    'SELECT id, name, email, phone, created_at FROM users ORDER BY id DESC'
+    'SELECT id, name, email, phone, created_at
+     FROM users
+     ORDER BY id DESC'
 )->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -46,8 +50,13 @@ $users = $pdo->query(
         .table th {
             white-space: nowrap;
         }
+
+        .action-buttons form {
+            display: inline;
+        }
     </style>
 </head>
+
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -80,9 +89,9 @@ $users = $pdo->query(
                     </p>
                 </div>
 
-               <a href="create.php" class="btn btn-primary">
-    + Add User
-</a>
+                <a href="create.php" class="btn btn-primary">
+                    + Add User
+                </a>
             </div>
 
             <div class="table-responsive">
@@ -97,19 +106,23 @@ $users = $pdo->query(
                             <th>Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
                     <?php if (empty($users)): ?>
                         <tr>
                             <td colspan="6"
                                 class="text-center py-5 text-secondary">
-                                No users found. Add-user functionality
-                                will be implemented next.
+                                No users found.
+                                Click Add User to create your first record.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($users as $user): ?>
                             <tr>
-                                <td><?= (int) $user['id'] ?></td>
+                                <td>
+                                    <?= (int) $user['id'] ?>
+                                </td>
+
                                 <td>
                                     <?= htmlspecialchars(
                                         $user['name'],
@@ -117,6 +130,7 @@ $users = $pdo->query(
                                         'UTF-8'
                                     ) ?>
                                 </td>
+
                                 <td>
                                     <?= htmlspecialchars(
                                         $user['email'],
@@ -124,6 +138,7 @@ $users = $pdo->query(
                                         'UTF-8'
                                     ) ?>
                                 </td>
+
                                 <td>
                                     <?= htmlspecialchars(
                                         $user['phone'] ?? '',
@@ -131,6 +146,7 @@ $users = $pdo->query(
                                         'UTF-8'
                                     ) ?>
                                 </td>
+
                                 <td>
                                     <?= htmlspecialchars(
                                         $user['created_at'],
@@ -138,10 +154,35 @@ $users = $pdo->query(
                                         'UTF-8'
                                     ) ?>
                                 </td>
+
                                 <td>
-                                    <span class="text-secondary small">
-                                        Actions coming next
-                                    </span>
+                                    <div class="action-buttons d-flex gap-2">
+                                        <a
+                                            href="update.php?id=<?= (int) $user['id'] ?>"
+                                            class="btn btn-sm btn-outline-primary"
+                                        >
+                                            Edit
+                                        </a>
+
+                                        <form
+                                            action="delete.php"
+                                            method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete this user?');"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="id"
+                                                value="<?= (int) $user['id'] ?>"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                            >
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -159,8 +200,8 @@ $users = $pdo->query(
     <small>Simple PHP CRUD &copy; <?= date('Y') ?></small>
 </footer>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
+```
