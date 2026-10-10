@@ -1,5 +1,13 @@
+```php
 <?php
+session_start();
+
 require_once __DIR__ . '/db.php';
+
+// Generate a CSRF token for this session.
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
 $pageTitle = 'Simple PHP CRUD';
 
@@ -14,6 +22,7 @@ $users = $pdo->query(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
 
     <link
@@ -52,6 +61,7 @@ $users = $pdo->query(
 
         .action-buttons form {
             display: inline;
+            margin: 0;
         }
     </style>
 </head>
@@ -118,41 +128,31 @@ $users = $pdo->query(
                     <?php else: ?>
                         <?php foreach ($users as $user): ?>
                             <tr>
-                                <td>
-                                    <?= (int) $user['id'] ?>
-                                </td>
+                                <td><?= (int) $user['id'] ?></td>
 
-                                <td>
-                                    <?= htmlspecialchars(
-                                        $user['name'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-                                </td>
+                                <td><?= htmlspecialchars(
+                                    $user['name'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?></td>
 
-                                <td>
-                                    <?= htmlspecialchars(
-                                        $user['email'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-                                </td>
+                                <td><?= htmlspecialchars(
+                                    $user['email'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?></td>
 
-                                <td>
-                                    <?= htmlspecialchars(
-                                        $user['phone'] ?? '',
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-                                </td>
+                                <td><?= htmlspecialchars(
+                                    $user['phone'] ?? '',
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?></td>
 
-                                <td>
-                                    <?= htmlspecialchars(
-                                        $user['created_at'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-                                </td>
+                                <td><?= htmlspecialchars(
+                                    $user['created_at'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?></td>
 
                                 <td>
                                     <div class="action-buttons d-flex gap-2">
@@ -172,6 +172,16 @@ $users = $pdo->query(
                                                 type="hidden"
                                                 name="id"
                                                 value="<?= (int) $user['id'] ?>"
+                                            >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="<?= htmlspecialchars(
+                                                    $_SESSION['csrf_token'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>"
                                             >
 
                                             <button
@@ -203,3 +213,4 @@ $users = $pdo->query(
 
 </body>
 </html>
+```
