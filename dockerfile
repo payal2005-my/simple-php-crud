@@ -1,12 +1,8 @@
 
-FROM php:8.3-apache
+FROM dunglas/frankenphp:1-php8.3
 
-RUN docker-php-ext-install pdo pdo_mysql
+RUN install-php-extensions pdo_mysql
 
-WORKDIR /var/www/html
+WORKDIR /app
 
-COPY . /var/www/html/
-
-RUN chown -R www-data:www-data /var/www/html
-
-EXPOSE 80
+COPY . /app
